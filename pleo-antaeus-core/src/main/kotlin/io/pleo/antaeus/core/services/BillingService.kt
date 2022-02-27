@@ -14,4 +14,19 @@ class BillingService(
                 if (paymentFacade.charge(invoice))
                     invoiceService.updateInvoiceStatus(invoice.id, InvoiceStatus.PAID) }
     }
+
+    suspend fun settleForIds(idList: List<Int>) {
+        invoiceService.fetchAll()
+            .filter { invoice -> idList.contains(invoice.id)}
+            .filter { invoice -> invoice.status == InvoiceStatus.PENDING }
+            .forEach { invoice ->
+                if (paymentFacade.charge(invoice))
+                    invoiceService.updateInvoiceStatus(invoice.id, InvoiceStatus.PAID) }
+    }
+
+    fun getAllPendingIds() : List<Int> {
+        return  invoiceService.fetchAll()
+            .filter { invoice -> invoice.status == InvoiceStatus.PENDING }
+            .map { invoice -> invoice.id }
+    }
 }
