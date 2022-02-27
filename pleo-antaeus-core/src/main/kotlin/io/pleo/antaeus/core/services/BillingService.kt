@@ -7,10 +7,11 @@ class BillingService(
     private val paymentFacade: PaymentFacade,
     private val invoiceService: InvoiceService) {
 
-    fun settleAllUnpaid() {
+    suspend fun settleAllUnpaid() {
         invoiceService.fetchAll()
             .filter { invoice -> invoice.status == InvoiceStatus.PENDING }
             .forEach { invoice ->
-                if (paymentFacade.charge(invoice)) invoiceService.updateInvoiceStatus(invoice.id, InvoiceStatus.PAID) }
+                if (paymentFacade.charge(invoice))
+                    invoiceService.updateInvoiceStatus(invoice.id, InvoiceStatus.PAID) }
     }
 }

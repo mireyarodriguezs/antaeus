@@ -34,5 +34,6 @@ fun Project.dataLibs() {
     dependencies {
         "implementation"("org.jetbrains.exposed:exposed:0.17.7")
         "implementation"("org.xerial:sqlite-jdbc:3.30.1")
+        "compile"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
     }
 }
