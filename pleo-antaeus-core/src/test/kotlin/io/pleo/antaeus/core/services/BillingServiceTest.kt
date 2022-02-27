@@ -112,7 +112,7 @@ class BillingServiceTest {
         val idsToProcess = listOf(TestDataBuilder.pendingInvoices[0].id, TestDataBuilder.pendingInvoices[2].id)
 
         // When
-        var pendingIds = billingService.settleForIds(idsToProcess)
+        billingService.settleForIds(idsToProcess)
 
         // Then we update the status of all invoice which id its specified and none of the rest
         idsToProcess.forEach { id ->

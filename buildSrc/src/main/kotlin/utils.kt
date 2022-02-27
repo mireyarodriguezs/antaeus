@@ -24,6 +24,10 @@ fun Project.kotlinProject() {
         "testImplementation"("org.junit.jupiter:junit-jupiter-api:$junitVersion")
         "testImplementation"("org.junit.jupiter:junit-jupiter-params:$junitVersion")
         "runtime"("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+        // Json Serialization
+        "implementation"("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+        // Coroutines
+        "compile"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
     }
 }
 
@@ -34,6 +38,5 @@ fun Project.dataLibs() {
     dependencies {
         "implementation"("org.jetbrains.exposed:exposed:0.17.7")
         "implementation"("org.xerial:sqlite-jdbc:3.30.1")
-        "compile"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
     }
 }
