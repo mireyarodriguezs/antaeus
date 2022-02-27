@@ -52,7 +52,7 @@ class AntaeusDal(private val db: Database) {
     }
 
     fun updateInvoiceStatus(invoiceId : Int, status: InvoiceStatus) : Int {
-        //val id = newSuspendedTransaction(Dispatchers.IO , db = db) {
+        println("Setting invoice $invoiceId to status ${status.toString()}")
         return transaction(db) {
             InvoiceTable
                 .update({ InvoiceTable.id.eq(invoiceId) }) {

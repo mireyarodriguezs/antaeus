@@ -15,6 +15,7 @@ import io.pleo.antaeus.core.services.InvoiceService
 import io.pleo.antaeus.data.AntaeusDal
 import io.pleo.antaeus.data.CustomerTable
 import io.pleo.antaeus.data.InvoiceTable
+import io.pleo.antaeus.messageconsumer.MessageConsumer
 import io.pleo.antaeus.rest.AntaeusRest
 import io.pleo.antaeus.scheduler.BillingScheduler
 import org.jetbrains.exposed.sql.Database
@@ -63,7 +64,7 @@ fun main() {
     val customerService = CustomerService(dal = dal)
 
     val paymentFacade = PaymentFacade(paymentProvider = paymentProvider)
-    // This is _your_ billing service to be included where you see fit
+
     val billingService = BillingService(paymentFacade, invoiceService)
 
     // Create REST web service
@@ -74,4 +75,6 @@ fun main() {
 
     // Run scheduler
     BillingScheduler(billingService = billingService).start()
+    // Run consumer
+    MessageConsumer(billingService = billingService).listen()
 }
