@@ -38,7 +38,7 @@ class PaymentFacade(private val paymentProvider: PaymentProvider) {
                     result = if (value) {
                         InvoiceStatus.PAID
                     } else {
-                        InvoiceStatus.PENDING
+                        InvoiceStatus.NOTSUFFICIENTFUNDS
                     }
             }
 

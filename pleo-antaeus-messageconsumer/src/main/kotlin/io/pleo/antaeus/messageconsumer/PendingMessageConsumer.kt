@@ -1,25 +1,19 @@
 package io.pleo.antaeus.messageconsumer
 
+import io.pleo.antaeus.core.CoroutineFactory
 import io.pleo.antaeus.core.messaging.QueueMessageConsumer
 import io.pleo.antaeus.core.services.BillingService
 import kotlinx.coroutines.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import java.util.concurrent.Executors
-import kotlin.coroutines.CoroutineContext
 
 private const val queueName = "PendingInvoicesQueue"
 private const val consumerTag = "SingleConsumer"
 
 class MessageConsumer(private val billingService: BillingService) {
-    fun listen() {
-        println("Launching coroutine for consumer....")
-        val threadPool = Executors.newFixedThreadPool(4)
-        val dispatcher = threadPool.asCoroutineDispatcher()
-        val context: CoroutineContext = Job() + dispatcher
-        val scope: CoroutineScope = CoroutineScope(context)
 
-        scope.launch(context) {
+    fun listen() {
+        CoroutineFactory.create(nThreads = 4, block = {
             println("Creating message consumer....")
             val messageConsumer = QueueMessageConsumer(queueName, consumerTag)
             val deliverCallback = { messageStr: String? ->
@@ -35,8 +29,6 @@ class MessageConsumer(private val billingService: BillingService) {
             }
 
             messageConsumer.listen(deliverCallback, cancelCallback)
-        }.invokeOnCompletion {
-            threadPool.shutdown()
-        }
+        })
     }
 }
