@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 import dev.inmo.krontab.doInfinityTz
 import io.pleo.antaeus.core.messaging.QueueMessageProducer
 import io.pleo.antaeus.core.services.BillingService
+import io.pleo.antaeus.models.InvoiceStatus
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
@@ -28,7 +29,7 @@ class BillingScheduler(val billingService : BillingService) {
                 val messageProducer = QueueMessageProducer()
 
                 //billingService.settleAllUnpaid()
-                billingService.getAllPendingIds()
+                billingService.getByStatus(InvoiceStatus.PENDING)
                     .chunked(batchSize)
                     .map { batch ->
                         messageProducer.sendMessage(batch, exchangeName, queueName)

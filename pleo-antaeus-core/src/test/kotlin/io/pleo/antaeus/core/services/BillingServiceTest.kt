@@ -73,7 +73,7 @@ class BillingServiceTest {
         billingService = BillingService(PaymentFacade(waterproofPaymentProvider), invoiceService)
 
         // When
-        var pendingIds = billingService.getAllPendingIds()
+        var pendingIds = billingService.getByStatus(InvoiceStatus.PENDING)
 
         // Then the pending ids we get is composed by all the ids from the pending dataset
         val ids = TestDataBuilder.pendingInvoices
@@ -93,7 +93,7 @@ class BillingServiceTest {
         billingService = BillingService(PaymentFacade(waterproofPaymentProvider), invoiceService)
 
         // When
-        val pendingIds = billingService.getAllPendingIds()
+        val pendingIds = billingService.getByStatus(InvoiceStatus.PENDING)
 
         // Then the pending ids we get is empty list
         val emptyList : List<Int>  = emptyList()
