@@ -7,8 +7,8 @@
 
 package io.pleo.antaeus.app
 
-import getPaymentProvider
 import io.pleo.antaeus.core.external.PaymentFacade
+import io.pleo.antaeus.core.external.RandomPaymentProvider
 import io.pleo.antaeus.core.services.BillingService
 import io.pleo.antaeus.core.services.CustomerService
 import io.pleo.antaeus.core.services.InvoiceService
@@ -25,7 +25,6 @@ import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
-import setupInitialData
 import java.io.File
 import java.sql.Connection
 
@@ -56,10 +55,10 @@ fun main() {
     val customerDal = CustomerDal(db = db)
 
     // Insert example data in the database.
-    setupInitialData(customerDal = customerDal, invoiceDal = invoiceDal)
+    DataSetup.setupInitialData(customerDal = customerDal, invoiceDal = invoiceDal)
 
     // Get third parties
-    val paymentProvider = getPaymentProvider()
+    val paymentProvider = RandomPaymentProvider.getPaymentProvider()
 
     // Create core services
     val invoiceService = InvoiceService(dal = invoiceDal)
