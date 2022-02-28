@@ -7,26 +7,23 @@ class BillingService(
     private val paymentFacade: PaymentFacade,
     private val invoiceService: InvoiceService) {
 
-    suspend fun settleAllUnpaid() {
+    suspend fun settleAllUnpaid() =
         invoiceService.fetchAll()
             .filter { invoice -> invoice.status == InvoiceStatus.PAID }
             .forEach { invoice ->
                 val newStatus = paymentFacade.charge(invoice)
                     invoiceService.updateInvoiceStatus(invoice.id, newStatus) }
-    }
 
-    suspend fun settleForIds(idList: List<Int>) {
+    suspend fun settleForIds(idList: List<Int>) =
         invoiceService.fetchAll()
             .filter { invoice -> idList.contains(invoice.id)}
             .filter { invoice -> invoice.status != InvoiceStatus.PAID }
             .forEach { invoice ->
                 val newStatus = paymentFacade.charge(invoice)
                 invoiceService.updateInvoiceStatus(invoice.id, newStatus) }
-    }
 
-    fun getByStatus(status : InvoiceStatus) : List<Int> {
-        return  invoiceService.fetchAll()
+    fun getByStatus(status : InvoiceStatus) : List<Int>  =
+        invoiceService.fetchAll()
             .filter { invoice -> invoice.status == status }
             .map { invoice -> invoice.id }
-    }
 }
