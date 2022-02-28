@@ -5,14 +5,14 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.pleo.antaeus.core.external.PaymentFacade
 import io.pleo.antaeus.core.external.PaymentProvider
+import io.pleo.antaeus.data.InvoiceDal
 import io.pleo.antaeus.models.Invoice
-import io.pleo.antaeus.data.AntaeusDal
 import io.pleo.antaeus.models.InvoiceStatus
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 
 class BillingServiceTest {
-    private lateinit var invoiceDal : AntaeusDal
+    private lateinit var invoiceDal : InvoiceDal
     private lateinit var invoiceService: InvoiceService
     private lateinit var billingService : BillingService
 

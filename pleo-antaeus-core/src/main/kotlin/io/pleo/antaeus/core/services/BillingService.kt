@@ -9,7 +9,7 @@ class BillingService(
 
     suspend fun settleAllUnpaid() =
         invoiceService.fetchAll()
-            .filter { invoice -> invoice.status == InvoiceStatus.PAID }
+            .filter { invoice -> invoice.status != InvoiceStatus.PAID }
             .forEach { invoice ->
                 val newStatus = paymentFacade.charge(invoice)
                     invoiceService.updateInvoiceStatus(invoice.id, newStatus) }

@@ -12,8 +12,9 @@ import io.pleo.antaeus.core.external.PaymentFacade
 import io.pleo.antaeus.core.services.BillingService
 import io.pleo.antaeus.core.services.CustomerService
 import io.pleo.antaeus.core.services.InvoiceService
-import io.pleo.antaeus.data.AntaeusDal
+import io.pleo.antaeus.data.CustomerDal
 import io.pleo.antaeus.data.CustomerTable
+import io.pleo.antaeus.data.InvoiceDal
 import io.pleo.antaeus.data.InvoiceTable
 import io.pleo.antaeus.messageconsumer.MessageConsumer
 import io.pleo.antaeus.rest.AntaeusRest
@@ -51,17 +52,18 @@ fun main() {
         }
 
     // Set up data access layer.
-    val dal = AntaeusDal(db = db)
+    val invoiceDal = InvoiceDal(db = db)
+    val customerDal = CustomerDal(db = db)
 
     // Insert example data in the database.
-    setupInitialData(dal = dal)
+    setupInitialData(customerDal = customerDal, invoiceDal = invoiceDal)
 
     // Get third parties
     val paymentProvider = getPaymentProvider()
 
     // Create core services
-    val invoiceService = InvoiceService(dal = dal)
-    val customerService = CustomerService(dal = dal)
+    val invoiceService = InvoiceService(dal = invoiceDal)
+    val customerService = CustomerService(dal = customerDal)
 
     val paymentFacade = PaymentFacade(paymentProvider = paymentProvider)
 
