@@ -23,46 +23,6 @@ class BillingServiceTest {
     }
 
     @Test
-    fun `will do nothing when there is no pending invoice`() = runBlocking {
-        // Given
-        invoiceDal = mockk {
-            every { fetchInvoices() } returns TestDataBuilder.allPaidInvoices
-        }
-        invoiceService = InvoiceService(dal = invoiceDal)
-        billingService = BillingService(PaymentFacade(waterproofPaymentProvider), invoiceService)
-        // When
-        billingService.settleAllUnpaid()
-        // Then
-        TestDataBuilder.allPaidInvoices
-            .map { invoice -> invoice.id }
-            .forEach { id ->
-                verify(exactly = 0) { invoiceService.updateInvoiceStatus(id, ofType()) }
-            }
-    }
-
-    @Test
-    fun `will mark as paid all pending invoices`() = runBlocking {
-        // Given
-        invoiceDal = mockk {
-            every { fetchInvoices() } returns TestDataBuilder.pendingInvoices
-            every { updateInvoiceStatus(ofType(), ofType()) } returns 1
-        }
-        invoiceService = InvoiceService(dal = invoiceDal)
-        billingService = BillingService(PaymentFacade(waterproofPaymentProvider), invoiceService)
-        // When
-
-        billingService.settleAllUnpaid()
-
-        // Then
-        val ids = TestDataBuilder.pendingInvoices
-            .map { invoice -> invoice.id }
-
-        ids.forEach { id ->
-                verify { invoiceService.updateInvoiceStatus(id, InvoiceStatus.PAID) }
-            }
-    }
-
-    @Test
     fun `will get all pending ids when there are many`() {
         // Given
         invoiceDal = mockk {
@@ -74,6 +34,7 @@ class BillingServiceTest {
 
         // When
         var pendingIds = billingService.getByStatus(InvoiceStatus.PENDING)
+            .map { invoice -> invoice.id }
 
         // Then the pending ids we get is composed by all the ids from the pending dataset
         val ids = TestDataBuilder.pendingInvoices
@@ -93,11 +54,11 @@ class BillingServiceTest {
         billingService = BillingService(PaymentFacade(waterproofPaymentProvider), invoiceService)
 
         // When
-        val pendingIds = billingService.getByStatus(InvoiceStatus.PENDING)
+        val pendingInvoices = billingService.getByStatus(InvoiceStatus.PENDING)
 
         // Then the pending ids we get is empty list
-        val emptyList : List<Int>  = emptyList()
-        assert(pendingIds == emptyList)
+        val emptyList : List<Invoice>  = emptyList()
+        assert(pendingInvoices == emptyList)
     }
 
     @Test
@@ -123,5 +84,25 @@ class BillingServiceTest {
             .forEach { i ->
                 verify(exactly = 0) { invoiceService.updateInvoiceStatus(i.id, InvoiceStatus.PAID) }
             }
+    }
+
+    @Test
+    fun `will try settle a single invoice and return if the result is paid`() = runBlocking {
+        // Given
+        val singleInvoice = TestDataBuilder.pendingInvoices[0]
+
+        invoiceDal = mockk {
+            every { fetchInvoice(singleInvoice.id) } returns singleInvoice
+            every { updateInvoiceStatus(ofType(), ofType()) } returns 1
+        }
+        invoiceService = InvoiceService(dal = invoiceDal)
+        billingService = BillingService(PaymentFacade(waterproofPaymentProvider), invoiceService)
+
+        // When
+        billingService.settleForId(singleInvoice.id)
+
+        // Then we verify the call is done and its result is true
+        verify (exactly = 1){ invoiceService.updateInvoiceStatus(singleInvoice.id, InvoiceStatus.PAID) }
+        assert(invoiceService.updateInvoiceStatus(singleInvoice.id, InvoiceStatus.PAID))
     }
 }
