@@ -8,7 +8,7 @@ import io.pleo.antaeus.core.services.CustomerService
 import io.pleo.antaeus.models.InvoiceStatus
 
 private const val frequency = "*/10 * * * *"//"0 0 * * 0" // At 00.00 on Sundays
-private const val exchangeName = "exchangeName"
+private const val exchangeName = "BillingsDueSchedulerExchangeName"
 
 class BillingsDueScheduler (private val billingService : BillingService, private val customerService: CustomerService) {
     fun start() {

@@ -9,7 +9,7 @@ import io.pleo.antaeus.models.InvoiceStatus
 
 private const val frequency = "*/10 * * * *"//"0 0 1 * *"
 private const val batchSize = 10
-private const val exchangeName = "exchangeName"
+private const val exchangeName = "FirstOfMonthExchangeName"
 
 class FirstOfMonthBillingScheduler(private val billingService : BillingService, private val customerService: CustomerService) {
 

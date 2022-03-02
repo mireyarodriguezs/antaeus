@@ -5,7 +5,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.nio.charset.StandardCharsets
 
-class QueueMessageProducer {
+class QueueMessageProducer(){
     inline fun <reified T> sendMessage(message: T, exchangeName: String, queueName: String, routingKey: String = "default") {
         val factory = ConnectionFactory()
         factory.newConnection(LocalQueue.getUri()).use { connection ->

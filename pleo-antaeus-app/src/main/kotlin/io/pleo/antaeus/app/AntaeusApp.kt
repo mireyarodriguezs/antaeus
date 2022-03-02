@@ -16,9 +16,11 @@ import io.pleo.antaeus.data.CustomerDal
 import io.pleo.antaeus.data.CustomerTable
 import io.pleo.antaeus.data.InvoiceDal
 import io.pleo.antaeus.data.InvoiceTable
-import io.pleo.antaeus.messageconsumer.MessageConsumer
+import io.pleo.antaeus.messageconsumer.DueInvoicesMessageConsumer
+import io.pleo.antaeus.messageconsumer.PendingInvoicesMessageConsumer
 import io.pleo.antaeus.rest.AntaeusRest
-import io.pleo.antaeus.scheduler.BillingScheduler
+import io.pleo.antaeus.scheduler.BillingsDueScheduler
+import io.pleo.antaeus.scheduler.FirstOfMonthBillingScheduler
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -75,7 +77,10 @@ fun main() {
     ).run()
 
     // Run scheduler
-    BillingScheduler(billingService = billingService).start()
+    FirstOfMonthBillingScheduler(billingService = billingService, customerService = customerService).start()
+    BillingsDueScheduler(billingService = billingService, customerService = customerService).start()
+
     // Run consumer
-    MessageConsumer(billingService = billingService).listen()
+    PendingInvoicesMessageConsumer(billingService = billingService).listen()
+    DueInvoicesMessageConsumer(billingService = billingService, customerService = customerService, invoiceService = invoiceService).listen()
 }
