@@ -5,6 +5,7 @@ import io.pleo.antaeus.data.InvoiceDal
 import io.pleo.antaeus.models.Currency
 import io.pleo.antaeus.models.InvoiceStatus
 import io.pleo.antaeus.models.Money
+import org.joda.time.DateTime
 import java.math.BigDecimal
 import kotlin.random.Random
 
@@ -26,7 +27,8 @@ class DataSetup {
                             currency = customer.currency
                         ),
                         customer = customer,
-                        status = if (it == 1) InvoiceStatus.PENDING else InvoiceStatus.PAID
+                        status = if (it == 1) InvoiceStatus.PENDING else InvoiceStatus.PAID,
+                        dueDate = DateTime.parse("2022-03-01")
                     )
                 }
             }
