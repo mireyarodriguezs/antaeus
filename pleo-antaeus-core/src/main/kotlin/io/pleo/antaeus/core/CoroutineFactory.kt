@@ -18,7 +18,7 @@ class CoroutineFactory {
 
             scope.launch(context) {
                 doInfinityTz(frequency) {
-                    println("Launching coroutine with frequency $frequency ....")
+                    println("Launching scheduler with frequency $frequency ....")
                     block()
                 }
             }.invokeOnCompletion {

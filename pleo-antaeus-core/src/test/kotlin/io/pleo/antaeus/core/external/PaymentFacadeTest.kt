@@ -11,6 +11,7 @@ import io.pleo.antaeus.models.Money
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import java.sql.Date
 
 class PaymentFacadeTest {
 
@@ -18,7 +19,7 @@ class PaymentFacadeTest {
     private lateinit var paymentFacade: PaymentFacade
 
     private val someInvoice : Invoice =
-        Invoice(1, 1, Money(BigDecimal.valueOf(1000), Currency.EUR), InvoiceStatus.PENDING)
+        Invoice(1, 1, Money(BigDecimal.valueOf(1000), Currency.EUR), InvoiceStatus.PENDING, Date.valueOf("2022-03-01"))
 
     @Test
     fun `will not retry when no exception is happening`() = runBlocking {
