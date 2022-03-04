@@ -7,8 +7,8 @@ import io.pleo.antaeus.core.messaging.QueueNames
 import io.pleo.antaeus.core.services.CustomerService
 import io.pleo.antaeus.models.InvoiceStatus
 
-private const val frequency = "*/10 * * * *"//"0 0 * * 0" // At 00.00 on Sundays
-private const val exchangeName = "BillingsDueSchedulerExchangeName"
+private const val frequency = "0 0 * * 0" // At 00.00 on Sundays
+//"*/10 * * * *"
 
 class BillingsDueScheduler (private val billingService : BillingService, private val customerService: CustomerService) {
     fun start() {
@@ -17,7 +17,7 @@ class BillingsDueScheduler (private val billingService : BillingService, private
             billingService.getByStatus(InvoiceStatus.NOTSUFFICIENTFUNDS)
                 .filter { invoice -> customerService.hasActiveSubscription(invoice.customerId) }
                 .map { invoice ->
-                    messageProducer.sendMessage(invoice.id, exchangeName, QueueNames.DueInvoicesQueue)
+                    messageProducer.sendMessage(invoice.id, QueueNames.InvoiceExchange, QueueNames.DueInvoicesQueue, QueueNames.DueInvoicesRouting)
                 }
         })
     }

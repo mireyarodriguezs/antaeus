@@ -14,8 +14,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.util.logging.Logger
 
-private const val consumerTag = "SingleConsumer"
-
 class DueInvoicesMessageConsumer (
     private val billingService: BillingService,
     private val invoiceService: InvoiceService,
@@ -28,7 +26,7 @@ class DueInvoicesMessageConsumer (
     fun listen() {
         CoroutineFactory.create(nThreads = 4, block = {
             println("Creating DueInvoicesMessageConsumer....")
-            val messageConsumer = QueueMessageConsumer(QueueNames.DueInvoicesQueue, consumerTag)
+            val messageConsumer = QueueMessageConsumer(QueueNames.DueInvoicesQueue, QueueNames.DueInvoicesConsumerTag)
             val deliverCallback = { messageStr: String? ->
                 println("DueInvoicesMessageConsumer Received new message with content $messageStr")
                 val invoiceId = Json.decodeFromString<Int>(messageStr.toString())

@@ -7,9 +7,9 @@ import io.pleo.antaeus.core.messaging.QueueNames
 import io.pleo.antaeus.core.services.CustomerService
 import io.pleo.antaeus.models.InvoiceStatus
 
-private const val frequency = "*/10 * * * *"//"0 0 1 * *"
+private const val frequency = "0 0 1 * *"//"*/10 * * * *"
 private const val batchSize = 10
-private const val exchangeName = "FirstOfMonthExchangeName"
+private const val exchangeName = "InvoicesExchange"
 
 class FirstOfMonthBillingScheduler(private val billingService : BillingService, private val customerService: CustomerService) {
 
@@ -22,7 +22,7 @@ class FirstOfMonthBillingScheduler(private val billingService : BillingService, 
                 .map { invoice -> invoice.id }
                 .chunked(batchSize)
                 .map { batch ->
-                    messageProducer.sendMessage(batch, exchangeName, QueueNames.pendingInvoicesQueueName)
+                    messageProducer.sendMessage(batch, exchangeName, QueueNames.pendingInvoicesQueueName, QueueNames.PendingInvoicesRouting)
                 }
         })
     }
